@@ -2,7 +2,7 @@
 
 A native macOS menu bar indicator for [GlazeWM](https://github.com/glzr-io/glazewm) workspaces. Requires [GlazeWM](https://github.com/glzr-io/glazewm) to be installed and running.
 
-<!-- TODO: Add screenshot -->
+![GlazeWM Indicator in the macOS menu bar](docs/glazewm-indicator_demo.png)
 
 ## Features
 
