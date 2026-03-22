@@ -39,9 +39,13 @@ Add to your `~/.glzr/glazewm/config.yaml` to auto-launch with GlazeWM:
 
 ```yaml
 general:
-  startup_commands: ["shell-exec open -b com.vrognas.glazewm-indicator"]
-  shutdown_commands: ["shell-exec pkill -x GlazeWMIndicator"]
+  startup_commands: ["shell-exec glazewm-indicator &"]
+  shutdown_commands: ["shell-exec pkill -x glazewm-indicator"]
 ```
+
+> **Note:** The `glazewm-indicator` command is installed automatically by Homebrew. If you installed manually, use the full path: `shell-exec '/Applications/GlazeWM Indicator.app/Contents/MacOS/GlazeWMIndicator' &`
+
+> **Startup delay:** The indicator may take ~20 seconds to appear when launched via `startup_commands`. This is because GlazeWM's `shell-exec` introduces a delay through macOS Launch Services before the process starts. The indicator itself connects instantly once running. If faster startup is important, consider launching the indicator independently (e.g., as a macOS Login Item) — it will auto-connect once GlazeWM is available.
 
 ## How it works
 

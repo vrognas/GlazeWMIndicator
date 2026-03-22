@@ -34,9 +34,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         sinks.append(
-            glazeClient.$isConnected.sink { [weak self] connected in
+            glazeClient.$isConnected.dropFirst().sink { [weak self] connected in
                 DispatchQueue.main.async {
-                    if !connected {
+                    if connected {
+                        self?.statusBarItem?.button?.title = ""
+                    } else {
                         self?.showDisconnected()
                     }
                 }
@@ -45,12 +47,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func refreshBarWidth() {
-        guard let button = statusBarItem?.button,
-              let hostingView = button.subviews.first else { return }
-        let fittingSize = hostingView.fittingSize
-        hostingView.frame.size.width = fittingSize.width
-        button.frame.size.width = fittingSize.width
-        statusBarItem?.length = fittingSize.width
+        DispatchQueue.main.async { [weak self] in
+            guard let button = self?.statusBarItem?.button,
+                  let hostingView = button.subviews.first else { return }
+            let fittingSize = hostingView.fittingSize
+            button.title = ""
+            hostingView.frame.size.width = fittingSize.width
+            button.frame.size.width = fittingSize.width
+            self?.statusBarItem?.length = fittingSize.width
+        }
     }
 
     private func showDisconnected() {
