@@ -7,8 +7,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     let workspaceModel = WorkspaceModel()
     let glazeClient = GlazeWMClient()
     var sinks: [AnyCancellable] = []
+    private var lockFd: Int32 = -1
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        guard acquireLock() else {
+            NSApp.terminate(nil)
+            return
+        }
         statusBarItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         statusBarItem?.menu = createMenu()
 
@@ -81,5 +86,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc private func quit() {
         glazeClient.disconnect()
         NSApp.terminate(nil)
+    }
+
+    private func acquireLock() -> Bool {
+        let lockPath = (NSTemporaryDirectory() as NSString)
+            .appendingPathComponent("com.vrognas.glazewm-indicator.lock")
+        lockFd = open(lockPath, O_WRONLY | O_CREAT, 0o600)
+        guard lockFd >= 0 else { return false }
+        if flock(lockFd, LOCK_EX | LOCK_NB) != 0 {
+            close(lockFd)
+            lockFd = -1
+            return false
+        }
+        return true
     }
 }
