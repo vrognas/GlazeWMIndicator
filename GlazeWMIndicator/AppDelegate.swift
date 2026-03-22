@@ -22,11 +22,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusBarItem?.button?.frame.size = hostingView.frame.size
 
         sinks.append(
-            workspaceModel.objectWillChange.sink { [weak self] _ in
-                DispatchQueue.main.async {
-                    self?.refreshBarWidth()
-                }
-            }
+            workspaceModel.$monitorGroups
+                .receive(on: RunLoop.main)
+                .sink { [weak self] _ in self?.refreshBarWidth() }
         )
 
         glazeClient.start { [weak self] workspaces in

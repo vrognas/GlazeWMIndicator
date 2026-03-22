@@ -1,6 +1,16 @@
 import Cocoa
 
+private struct ImageCacheKey: Hashable {
+    let label: String
+    let active: Bool
+    let visible: Bool
+}
+
+private var imageCache: [ImageCacheKey: NSImage] = [:]
+
 func generateWorkspaceImage(label: String, active: Bool, visible: Bool) -> NSImage {
+    let key = ImageCacheKey(label: label, active: active, visible: visible)
+    if let cached = imageCache[key] { return cached }
     let size = CGSize(width: 24, height: 16)
     let cornerRadius: CGFloat = 3
     let canvas = NSRect(origin: .zero, size: size)
@@ -45,6 +55,7 @@ func generateWorkspaceImage(label: String, active: Bool, visible: Bool) -> NSIma
     }
 
     image.isTemplate = true
+    imageCache[key] = image
     return image
 }
 

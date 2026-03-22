@@ -10,6 +10,7 @@ class GlazeWMClient: ObservableObject {
     private var onWorkspacesUpdate: (([WorkspaceInfo]) -> Void)?
     private var reconnectTask: Task<Void, Never>?
     private var debounceTask: Task<Void, Never>?
+    private let decoder = JSONDecoder()
 
     init() {
         self.session = URLSession(configuration: .default)
@@ -24,9 +25,9 @@ class GlazeWMClient: ObservableObject {
         guard let url = URL(string: "ws://127.0.0.1:\(port)") else { return }
         webSocketTask = session.webSocketTask(with: url)
         webSocketTask?.resume()
-        isConnected = true
         Task {
-            await queryWorkspaces()
+            let ok = await send("query workspaces")
+            if ok { isConnected = true }
             await subscribeToEvents()
             await receiveMessages()
         }
@@ -48,11 +49,14 @@ class GlazeWMClient: ObservableObject {
 
     // MARK: - Private
 
-    private func send(_ message: String) async {
+    @discardableResult
+    private func send(_ message: String) async -> Bool {
         do {
             try await webSocketTask?.send(.string(message))
+            return true
         } catch {
             handleDisconnect()
+            return false
         }
     }
 
@@ -88,7 +92,7 @@ class GlazeWMClient: ObservableObject {
     private func handleMessage(_ text: String) {
         guard let data = text.data(using: .utf8) else { return }
         do {
-            let message = try JSONDecoder().decode(ServerMessage.self, from: data)
+            let message = try decoder.decode(ServerMessage.self, from: data)
             switch message {
             case .clientResponse(let response):
                 if response.success, case .workspaces(let wsData) = response.data {
