@@ -31,7 +31,7 @@ swift build -c release
 ## Requirements
 
 - macOS 13.0+
-- [GlazeWM](https://github.com/glzr-io/glazewm) running with IPC enabled (default)
+- [GlazeWM](https://github.com/glzr-io/glazewm) running (IPC is always enabled, no configuration needed)
 
 ## Usage with GlazeWM
 
