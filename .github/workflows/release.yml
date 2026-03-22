@@ -56,6 +56,7 @@ jobs:
           zip -r "GlazeWMIndicator-${VERSION}.zip" "GlazeWM Indicator.app"
 
       - name: Notarize
+        timeout-minutes: 30
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
@@ -66,7 +67,7 @@ jobs:
             --apple-id "$APPLE_ID" \
             --password "$APPLE_APP_PASSWORD" \
             --team-id "$APPLE_TEAM_ID" \
-            --wait
+            --wait --timeout 20m
 
       - name: Staple
         run: |
