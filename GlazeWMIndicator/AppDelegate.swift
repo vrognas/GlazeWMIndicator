@@ -62,8 +62,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func createMenu() -> NSMenu {
         let menu = NSMenu()
-        menu.addItem(withTitle: "Quit GlazeWM Indicator", action: #selector(quit), keyEquivalent: "q")
+
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "dev"
+        let aboutItem = NSMenuItem(title: "GlazeWM Indicator v\(version)", action: #selector(openRepo), keyEquivalent: "")
+        menu.addItem(aboutItem)
+        menu.addItem(NSMenuItem.separator())
+        menu.addItem(withTitle: "Quit", action: #selector(quit), keyEquivalent: "q")
         return menu
+    }
+
+    @objc private func openRepo() {
+        NSWorkspace.shared.open(URL(string: "https://github.com/vrognas/glazewm-indicator")!)
     }
 
     @objc private func quit() {
