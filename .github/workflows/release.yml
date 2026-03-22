@@ -55,31 +55,10 @@ jobs:
           cd .build
           zip -r "GlazeWMIndicator-${VERSION}.zip" "GlazeWM Indicator.app"
 
-      - name: Notarize
-        timeout-minutes: 30
-        env:
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          VERSION: ${{ steps.version.outputs.version }}
-        run: |
-          xcrun notarytool submit ".build/GlazeWMIndicator-${VERSION}.zip" \
-            --apple-id "$APPLE_ID" \
-            --password "$APPLE_APP_PASSWORD" \
-            --team-id "$APPLE_TEAM_ID" \
-            --wait --timeout 20m
-
-      - name: Staple
-        run: |
-          xcrun stapler staple ".build/GlazeWM Indicator.app"
-
-      - name: Re-zip after stapling
-        env:
-          VERSION: ${{ steps.version.outputs.version }}
-        run: |
-          cd .build
-          rm "GlazeWMIndicator-${VERSION}.zip"
-          zip -r "GlazeWMIndicator-${VERSION}.zip" "GlazeWM Indicator.app"
+      # TODO: Re-enable notarization when Apple's service is responsive
+      # - name: Notarize
+      # - name: Staple
+      # - name: Re-zip after stapling
 
       - name: Create GitHub Release
         env:
