@@ -68,7 +68,7 @@ struct IPCTests {
         {
             "messageType": "event_subscription",
             "subscriptionId": "sub-uuid-123",
-            "data": {"type": "workspace_activated"},
+            "data": {"eventType": "workspace_activated"},
             "error": null,
             "success": true
         }

@@ -67,5 +67,5 @@ struct EventSubscriptionMessage: Decodable {
 }
 
 struct EventData: Decodable {
-    let type: String
+    let eventType: String
 }

@@ -1,4 +1,7 @@
 import Foundation
+import os
+
+private let logger = Logger(subsystem: "io.glzr.glazewm-indicator", category: "ipc")
 
 @MainActor
 class GlazeWMClient: ObservableObject {
@@ -91,10 +94,13 @@ class GlazeWMClient: ObservableObject {
             let message = try JSONDecoder().decode(ServerMessage.self, from: data)
             switch message {
             case .clientResponse(let response):
+                NSLog("[GWM] client_response: \(response.clientMessage), success: \(response.success)")
                 if response.success, case .workspaces(let wsData) = response.data {
+                    NSLog("[GWM] Got \(wsData.workspaces.count) workspaces")
                     onWorkspacesUpdate?(wsData.workspaces)
                 }
-            case .eventSubscription:
+            case .eventSubscription(let event):
+                NSLog("[GWM] event: \(event.data?.eventType ?? "unknown")")
                 debounceTask?.cancel()
                 debounceTask = Task {
                     try? await Task.sleep(nanoseconds: 100_000_000)
@@ -104,7 +110,8 @@ class GlazeWMClient: ObservableObject {
                 }
             }
         } catch {
-            // Ignore unparseable messages
+            NSLog("[GWM] Decode error: \(error)")
+            NSLog("[GWM] Raw: \(text.prefix(200))")
         }
     }
 
