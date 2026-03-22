@@ -18,13 +18,13 @@ A native macOS menu bar indicator for [GlazeWM](https://github.com/glzr-io/glaze
 brew install --cask vrognas/tap/glazewm-indicator
 ```
 
-Or download the latest release from [Releases](https://github.com/vrognas/GlazeWMIndicator/releases).
+Or download the latest release from [Releases](https://github.com/vrognas/glazewm-indicator/releases).
 
 ## Build from source
 
 ```sh
-git clone https://github.com/vrognas/GlazeWMIndicator.git
-cd GlazeWMIndicator
+git clone https://github.com/vrognas/glazewm-indicator.git
+cd glazewm-indicator
 swift build -c release
 ```
 
@@ -40,7 +40,7 @@ Add to your `~/.glzr/glazewm/config.yaml` to auto-launch with GlazeWM:
 ```yaml
 general:
   startup_commands: ["shell-exec open -a 'GlazeWM Indicator'"]
-  shutdown_commands: ["shell-exec pkill -x GlazeWMIndicator"]
+  shutdown_commands: ["shell-exec pkill -x glazewm-indicator"]
 ```
 
 ## How it works
