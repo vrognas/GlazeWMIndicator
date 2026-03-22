@@ -62,7 +62,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func createMenu() -> NSMenu {
         let menu = NSMenu()
-        menu.addItem(withTitle: "Quit GlazeWMIndicator", action: #selector(quit), keyEquivalent: "q")
+        menu.addItem(withTitle: "Quit GlazeWM Indicator", action: #selector(quit), keyEquivalent: "q")
         return menu
     }
 

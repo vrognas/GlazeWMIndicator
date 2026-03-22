@@ -53,7 +53,7 @@ jobs:
           VERSION: ${{ steps.version.outputs.version }}
         run: |
           cd .build
-          zip -r "GlazeWMIndicator-${VERSION}.zip" "GlazeWM Indicator.app"
+          zip -r "glazewm-indicator-${VERSION}.zip" "GlazeWM Indicator.app"
 
       # TODO: Re-enable notarization when Apple's service is responsive
       # - name: Notarize
@@ -67,6 +67,6 @@ jobs:
           VERSION: ${{ steps.version.outputs.version }}
         run: |
           gh release create "$TAG_NAME" \
-            ".build/GlazeWMIndicator-${VERSION}.zip" \
+            ".build/glazewm-indicator-${VERSION}.zip" \
             --title "$TAG_NAME" \
             --generate-notes
