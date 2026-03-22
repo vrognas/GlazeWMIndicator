@@ -2,37 +2,45 @@ import Cocoa
 
 func generateWorkspaceImage(label: String, active: Bool, visible: Bool) -> NSImage {
     let size = CGSize(width: 24, height: 16)
-    let cornerRadius: CGFloat = 4
+    let cornerRadius: CGFloat = 3
     let canvas = NSRect(origin: .zero, size: size)
     let image = NSImage(size: size)
-    let strokeColor = NSColor.black
+    let color = NSColor.black
 
-    if active || visible {
+    if active {
+        // Focused: filled rounded rect with knocked-out text (solid, prominent)
         let imageFill = NSImage(size: size)
         let imageText = NSImage(size: size)
 
         imageFill.lockFocus()
-        strokeColor.setFill()
+        color.setFill()
         NSBezierPath(roundedRect: canvas, xRadius: cornerRadius, yRadius: cornerRadius).fill()
         imageFill.unlockFocus()
 
         imageText.lockFocus()
-        drawLabel(label as NSString, color: strokeColor, size: size)
+        drawLabel(label as NSString, color: color, size: size)
         imageText.unlockFocus()
 
         image.lockFocus()
-        imageFill.draw(in: canvas, from: .zero, operation: .sourceOut, fraction: active ? 1.0 : 0.8)
-        imageText.draw(in: canvas, from: .zero, operation: .destinationOut, fraction: active ? 1.0 : 0.8)
+        imageFill.draw(in: canvas, from: .zero, operation: .sourceOut, fraction: 1.0)
+        imageText.draw(in: canvas, from: .zero, operation: .destinationOut, fraction: 1.0)
         image.unlockFocus()
-    } else {
+    } else if visible {
+        // Displayed but not focused: stroked outline with text at reduced opacity
         image.lockFocus()
-        strokeColor.setStroke()
+        color.setStroke()
         let path = NSBezierPath(
             roundedRect: canvas.insetBy(dx: 0.5, dy: 0.5),
             xRadius: cornerRadius, yRadius: cornerRadius
         )
+        path.lineWidth = 1.0
         path.stroke()
-        drawLabel(label as NSString, color: strokeColor, size: size)
+        drawLabel(label as NSString, color: color, size: size)
+        image.unlockFocus()
+    } else {
+        // Active (has windows) but not on any monitor: just the number, no outline
+        image.lockFocus()
+        drawLabel(label as NSString, color: color, size: size)
         image.unlockFocus()
     }
 
@@ -43,7 +51,7 @@ func generateWorkspaceImage(label: String, active: Bool, visible: Bool) -> NSIma
 private func drawLabel(_ text: NSString, color: NSColor, size: CGSize) {
     let fontSize: CGFloat = 10
     let attrs: [NSAttributedString.Key: Any] = [
-        .font: NSFont.systemFont(ofSize: fontSize, weight: .medium),
+        .font: NSFont.monospacedDigitSystemFont(ofSize: fontSize, weight: .medium),
         .foregroundColor: color,
     ]
     let boundingBox = text.size(withAttributes: attrs)
